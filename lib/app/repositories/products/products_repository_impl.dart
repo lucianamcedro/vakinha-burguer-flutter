@@ -10,12 +10,15 @@ import './products_repository.dart';
 class ProductsRepositoryImpl implements ProductsRepository {
   final CustomDio dio;
 
-  ProductsRepositoryImpl({required this.dio});
+  ProductsRepositoryImpl({
+    required this.dio,
+  });
 
   @override
   Future<List<ProductModel>> findAllProducts() async {
     try {
-      final result = await dio.auth().get('/products');
+      final result = await dio.unAuth().get('/products');
+
       return result.data
           .map<ProductModel>((p) => ProductModel.fromMap(p))
           .toList();

@@ -1,36 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vakinha_burguer_flutter/app/core/ui/helpers/loader.dart';
+import 'package:vakinha_burguer_flutter/app/core/ui/helpers/messages.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/widgets/delivery_appbar.dart';
-import 'package:vakinha_burguer_flutter/app/models/product_model.dart';
 import 'package:vakinha_burguer_flutter/app/models/widgets/delivery_product_tile.dart';
+import 'package:vakinha_burguer_flutter/app/pages/home/home_controller.dart';
+import 'package:vakinha_burguer_flutter/app/pages/home/home_state.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with Loader, Messages {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<HomeController>().loadProduct();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DeliveryAppbar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return DeliveryProductTile(
-                  productModel: ProductModel(
-                    id: 0,
-                    name: 'Lanche X',
-                    description:
-                        'Pão artesanal, com bife 200g, bacon, cebola caramelisada e maionese verde',
-                    price: 15,
-                    image:
-                        'https://th.bing.com/th/id/R.1dff5bd2b2428602c8bf3b6df939d58d?rik=J7Wbhlr7n%2fbHYw&riu=http%3a%2f%2filarge.lisimg.com%2fimage%2f5996523%2f740full-hamburger.jpg&ehk=ghWzrT9k4YLS1OGYngxrRgC%2fADev8H0szYvMpzlGIJw%3d&risl=&pid=ImgRaw&r=0',
-                  ),
-                );
-              },
-            ),
-          )
-        ],
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        showError('Erro ao testar burro');
+      }),
+      body: BlocConsumer<HomeController, HomeState>(
+        listener: (context, state) {
+          state.stateStatus.matchAny(
+            any: () => hideLoader(),
+            loading: () => showLoader(),
+          );
+        },
+        buildWhen: (previous, current) => current.stateStatus.matchAny(
+          any: () => false,
+          initial: () => true,
+          loaded: () => true,
+        ),
+        builder: (context, state) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) {
+                    final products = state.products[index];
+                    return DeliveryProductTile(
+                      productModel: products,
+                    );
+                  },
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vakinha_burguer_flutter/app/pages/home/home_controller.dart';
 import 'package:vakinha_burguer_flutter/app/pages/home/home_page.dart';
 import 'package:vakinha_burguer_flutter/app/repositories/products/products_repository.dart';
 import 'package:vakinha_burguer_flutter/app/repositories/products/products_repository_impl.dart';
@@ -14,6 +15,7 @@ class HomeRouter {
               dio: context.read(),
             ),
           ),
+          Provider(create: (context) => HomeController(context.read())),
         ],
         child: const HomePage(),
       );
