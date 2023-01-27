@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vakinha_burguer_flutter/app/core/ui/helpers/loader.dart';
-import 'package:vakinha_burguer_flutter/app/core/ui/helpers/messages.dart';
+import 'package:vakinha_burguer_flutter/app/core/base_state/base_state.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:vakinha_burguer_flutter/app/models/widgets/delivery_product_tile.dart';
 import 'package:vakinha_burguer_flutter/app/pages/home/home_controller.dart';
@@ -14,28 +13,25 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with Loader, Messages {
+class _HomePageState extends BaseState<HomePage, HomeController> {
   @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<HomeController>().loadProduct();
-    });
-    super.initState();
+  void onReady() {
+    controller.loadProduct();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DeliveryAppbar(),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        showError('Erro ao testar burro');
-      }),
       body: BlocConsumer<HomeController, HomeState>(
         listener: (context, state) {
           state.stateStatus.matchAny(
-            any: () => hideLoader(),
-            loading: () => showLoader(),
-          );
+              any: () => hideLoader(),
+              loading: () => showLoader(),
+              error: () {
+                hideLoader();
+                showError(state.errorMessage ?? 'Erro não informado');
+              });
         },
         buildWhen: (previous, current) => current.stateStatus.matchAny(
           any: () => false,

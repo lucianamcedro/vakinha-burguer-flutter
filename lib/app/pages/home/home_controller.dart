@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 
 import 'package:vakinha_burguer_flutter/app/pages/home/home_state.dart';
@@ -15,6 +17,15 @@ class HomeController extends Cubit<HomeState> {
       final products = await _productsRepository.findAllProducts();
       emit(state.copyWith(
           stateStatus: HomeStateStatus.loaded, products: products));
-    } catch (e) {}
+    } catch (e, s) {
+      log(
+        'Erro ao buscar produtos',
+        error: e,
+        stackTrace: s,
+      );
+      emit(state.copyWith(
+          stateStatus: HomeStateStatus.error,
+          errorMessage: 'Erro ao buscar produtos'));
+    }
   }
 }
