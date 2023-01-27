@@ -3,12 +3,12 @@ import 'package:vakinha_burguer_flutter/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/text_styles.dart';
 
 class DeliveryIncrement extends StatelessWidget {
-  final int amout;
+  final int amount;
   final VoidCallback incrementPress;
   final VoidCallback decrementPress;
   const DeliveryIncrement(
       {super.key,
-      required this.amout,
+      required this.amount,
       required this.incrementPress,
       required this.decrementPress});
 
@@ -36,7 +36,7 @@ class DeliveryIncrement extends StatelessWidget {
             ),
           ),
           Text(
-            amout.toString(),
+            amount.toString(),
             style: context.textStyle.textRegular
                 .copyWith(fontSize: 17, color: context.colors.secondary),
           ),

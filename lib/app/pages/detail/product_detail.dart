@@ -7,18 +7,60 @@ import 'package:vakinha_burguer_flutter/app/core/ui/helpers/size_extensions.dart
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/widgets/delivery_increment.dart';
+import 'package:vakinha_burguer_flutter/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer_flutter/app/models/product_model.dart';
 import 'package:vakinha_burguer_flutter/app/pages/detail/product_controller.dart';
 
 class ProductDetail extends StatefulWidget {
   final ProductModel productModel;
-  const ProductDetail({super.key, required this.productModel});
+  final OrderProductDto? order;
+  const ProductDetail({super.key, required this.productModel, this.order});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
 }
 
 class _ProductDetailState extends BaseState<ProductDetail, ProductController> {
+  @override
+  void initState() {
+    super.initState();
+    final amount = widget.order?.amount ?? 1;
+    controller.initial(amount, widget.order != null);
+  }
+
+  void _showConfirmeDelete(int amount) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Deseja excluir o produto?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Cancelar',
+                  style: context.textStyle.textBold.copyWith(color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pop(OrderProductDto(
+                      productModel: widget.productModel, amount: amount));
+                },
+                child: Text(
+                  'Confirmar',
+                  style: context.textStyle.textBold,
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +113,9 @@ class _ProductDetailState extends BaseState<ProductDetail, ProductController> {
                 height: 68,
                 padding: const EdgeInsets.all(8),
                 child: BlocBuilder<ProductController, int>(
-                  builder: (context, amout) {
+                  builder: (context, amount) {
                     return DeliveryIncrement(
-                      amout: amout,
+                      amount: amount,
                       decrementPress: () {
                         controller.decrement();
                       },
@@ -89,30 +131,49 @@ class _ProductDetailState extends BaseState<ProductDetail, ProductController> {
                 height: 68,
                 padding: const EdgeInsets.all(8),
                 child: BlocBuilder<ProductController, int>(
-                  builder: (context, amout) {
+                  builder: (context, amount) {
                     return ElevatedButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Adicionar",
-                            style: context.textStyle.textExtraBold
-                                .copyWith(fontSize: 13),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: AutoSizeText(
-                              (widget.productModel.price * 1).currencyPTBR,
-                              maxFontSize: 13,
-                              minFontSize: 5,
-                              maxLines: 1,
-                              style: context.textStyle.textExtraBold,
+                      style: amount == 0
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red)
+                          : null,
+                      onPressed: () {
+                        if (amount == 0) {
+                          _showConfirmeDelete(amount);
+                        } else {
+                          Navigator.of(context).pop(OrderProductDto(
+                              productModel: widget.productModel,
+                              amount: amount));
+                        }
+                      },
+                      child: Visibility(
+                        visible: amount > 0,
+                        replacement: Text(
+                          'Excluir produto',
+                          style: context.textStyle.textExtraBold,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Adicionar",
+                              style: context.textStyle.textExtraBold
+                                  .copyWith(fontSize: 13),
                             ),
-                          )
-                        ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: AutoSizeText(
+                                (widget.productModel.price * 1).currencyPTBR,
+                                maxFontSize: 13,
+                                minFontSize: 5,
+                                maxLines: 1,
+                                style: context.textStyle.textExtraBold,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   },

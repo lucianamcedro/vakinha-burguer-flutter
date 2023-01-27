@@ -3,11 +3,11 @@ import 'package:vakinha_burguer_flutter/app/models/product_model.dart';
 
 class OrderProductDto {
   final ProductModel productModel;
-  final int amout;
+  final int amount;
   OrderProductDto({
     required this.productModel,
-    required this.amout,
+    required this.amount,
   });
 
-  double get totalPrice => amout * productModel.price;
+  double get totalPrice => amount * productModel.price;
 }

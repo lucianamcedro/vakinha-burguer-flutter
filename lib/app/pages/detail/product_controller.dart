@@ -2,10 +2,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductController extends Cubit<int> {
   ProductController() : super(1);
+  late final bool _hasOrder;
+
+  void initial(int amount, bool hasOrder) {
+    _hasOrder = hasOrder;
+    emit(amount);
+  }
 
   void increment() => emit(state + 1);
   void decrement() {
-    if (state > 1) {
+    if (state > (_hasOrder ? 0 : 1)) {
       emit(state - 1);
     }
   }
