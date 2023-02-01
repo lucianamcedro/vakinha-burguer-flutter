@@ -40,6 +40,8 @@ class OrderField extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: TextFormField(
+              controller: controller,
+              validator: validator,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: defaultBorder,
