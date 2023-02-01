@@ -21,6 +21,5 @@ class AuthInterceptor extends Interceptor {
     } else {
       handler.next(err);
     }
-    super.onError(err, handler);
   }
 }
