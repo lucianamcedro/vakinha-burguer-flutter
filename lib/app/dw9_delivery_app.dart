@@ -8,6 +8,7 @@ import 'package:vakinha_burguer_flutter/app/pages/auth/register/register_route.d
 import 'package:vakinha_burguer_flutter/app/pages/detail/product_route.dart';
 import 'package:vakinha_burguer_flutter/app/pages/home/home_router.dart';
 import 'package:vakinha_burguer_flutter/app/pages/order/order_page.dart';
+import 'package:vakinha_burguer_flutter/app/pages/order/order_route.dart';
 import 'package:vakinha_burguer_flutter/app/pages/splash/splash_page.dart';
 
 class Dw9DeliveryApp extends StatelessWidget {
@@ -26,7 +27,7 @@ class Dw9DeliveryApp extends StatelessWidget {
           '/detail': (context) => ProductRoute.page,
           '/login': (context) => LoginRoute.page,
           '/register': (context) => RegisterRoute.page,
-          '/order': (context) => const OrderPage(),
+          '/order': (context) => OrderRoute.page,
         },
       ),
     );
