@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vakinha_burguer_flutter/app/core/extensions/formatter_extension.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/helpers/size_extensions.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer_flutter/app/dto/order_product_dto.dart';
+import 'package:vakinha_burguer_flutter/app/pages/home/home_controller.dart';
 
 class ShoppingBag extends StatelessWidget {
   final List<OrderProductDto> bag;
@@ -11,7 +13,9 @@ class ShoppingBag extends StatelessWidget {
 
   Future<void> _goOrder(BuildContext context) async {
     final navigator = Navigator.of(context);
+    final controller = context.read<HomeController>();
     final sp = await SharedPreferences.getInstance();
+
     if (!sp.containsKey('accessToken')) {
       final loginResult = await navigator.pushNamed('/login');
 
@@ -20,7 +24,10 @@ class ShoppingBag extends StatelessWidget {
       }
     }
     //ENVIANDO PARA ORDER
-    await navigator.pushNamed('/order', arguments: bag);
+    final updateBag = await navigator.pushNamed('/order', arguments: bag);
+    controller.updateBag(
+      (updateBag ?? const <OrderProductDto>[]) as List<OrderProductDto>,
+    );
   }
 
   @override

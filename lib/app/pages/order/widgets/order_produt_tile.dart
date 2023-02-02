@@ -1,11 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vakinha_burguer_flutter/app/core/extensions/formatter_extension.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/widgets/delivery_increment.dart';
 
 import 'package:vakinha_burguer_flutter/app/dto/order_product_dto.dart';
+import 'package:vakinha_burguer_flutter/app/pages/order/order_controller.dart';
 
 class OrderProdutTile extends StatelessWidget {
   final int index;
@@ -49,9 +51,13 @@ class OrderProdutTile extends StatelessWidget {
                             fontSize: 14, color: context.colors.secondary),
                       ),
                       DeliveryIncrement.compact(
-                        amount: 1,
-                        incrementPress: () {},
-                        decrementPress: () {},
+                        amount: orderProduct.amount,
+                        incrementPress: () => context
+                            .read<OrderController>()
+                            .incrementProduct(index),
+                        decrementPress: () => context
+                            .read<OrderController>()
+                            .decrementProduct(index),
                       ),
                     ],
                   )

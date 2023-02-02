@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:vakinha_burguer_flutter/app/core/ui/styles/text_styles.dart';
 
 class OrderField extends StatelessWidget {
@@ -7,12 +8,14 @@ class OrderField extends StatelessWidget {
   final TextEditingController controller;
   final FormFieldValidator validator;
   final String hintText;
+  final List<TextInputFormatter>? inputFormatters;
   const OrderField({
     Key? key,
     required this.titulo,
     required this.controller,
     required this.validator,
     required this.hintText,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -42,6 +45,7 @@ class OrderField extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               validator: validator,
+              inputFormatters: inputFormatters,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: defaultBorder,
