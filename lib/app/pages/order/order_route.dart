@@ -14,7 +14,8 @@ class OrderRoute {
             create: (context) => OrderRepositoryImpl(dio: context.read()),
           ),
           Provider(
-            create: (context) => OrderController(context.read()),
+            create: (context) =>
+                OrderController(orderRepository: context.read()),
           )
         ],
         child: const OrderPage(),
